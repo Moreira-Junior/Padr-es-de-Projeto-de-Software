@@ -1,31 +1,32 @@
 package iterator;
 
 import grafo.dirigido.Aresta;
-import grafo.dirigido.VertexState;
 import grafo.dirigido.Vertice;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Queue;
+import java.util.*;
 
 public class DFSIterator<T> implements IteratorInterface{
 
     private List<Vertice<T>> vertices;
     private List<Aresta<T>> arestas;
-    private Queue<Vertice<T>> fila;
-    private Vertice<T> ultimoVertice;
+    private Stack<Vertice<T>> pilha = new Stack<>();
+    private Set<Vertice<T>> visitados = new HashSet<>();
 
     public DFSIterator(List<Vertice<T>> vertices, List<Aresta<T>> arestas, T carga) {
         this.vertices = vertices;
         this.arestas = arestas;
-        this.fila = new LinkedList<>();
-        this.DFS(carga);
+        Vertice<T> origem = getVertice(carga);
+        if (origem != null) {
+            this.pilha.push(origem);
+            this.visitados.add(origem);
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
     public boolean hasNext() {
-        return !fila.isEmpty();
+        return !pilha.isEmpty();
     }
 
     @Override
@@ -33,41 +34,14 @@ public class DFSIterator<T> implements IteratorInterface{
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        ultimoVertice = fila.remove();
-        return ultimoVertice;
-    }
-
-    public void DFS(T source){
-        Vertice<T> u = null;
-
-        if ((u = getVertice(source)) == null) {
-            System.err.println("vertice nao encontrado em runDFS()");
-            return;
+        Vertice<T> atual = pilha.pop();
+        for (Vertice<T> vizinho : this.adjacentes(atual)) {
+            if (!this.visitados.contains(vizinho)) {
+                this.pilha.push(vizinho);
+                this.visitados.add(vizinho);
+            }
         }
-
-        for(int i=0; i < vertices.size(); i++ ){
-            vertices.get(i).setStatus(VertexState.Unvisited);
-        }
-
-        runDFS( u );
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private void runDFS(Vertice<T> u){
-        Vertice<T> w = null;
-        List<Aresta<T>> uAdjacentes = null;
-
-        u.setStatus(VertexState.Visited);
-        uAdjacentes = u.getAdj();
-
-        for(Aresta<T> arco: uAdjacentes){
-            w = (Vertice<T>) arco.getDestino();
-            if( w.getStatus() == VertexState.Unvisited )
-                runDFS(w);
-        }
-        adicionarNaFila(u);
-        u.setStatus(VertexState.Finished);
+        return atual;
     }
 
     public Vertice<T> getVertice( T carga){
@@ -79,9 +53,14 @@ public class DFSIterator<T> implements IteratorInterface{
         return null;
     }
 
-    public void adicionarNaFila(Vertice<T> carga) {
-        if (!this.fila.contains(carga)) {
-            this.fila.add(carga);
+    @SuppressWarnings("unchecked")
+    private List<Vertice<T>> adjacentes(Vertice<T> u) {
+        List<Vertice<T>> vertex = new ArrayList<>();
+        for (Aresta<T> arco : arestas) {
+            if (arco.getOrigem().equals(u)) {
+                vertex.add((Vertice<T>) arco.getDestino());
+            }
         }
+        return vertex;
     }
 }
