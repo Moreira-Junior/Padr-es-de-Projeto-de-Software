@@ -56,11 +56,8 @@ public class BFSIterator<T> implements IteratorInterface{
     private List<Vertice<T>> incidentes( Vertice<T> u ){
         List<Vertice<T>> vertex = new ArrayList<Vertice<T>>();
         for(Aresta<T> arco: arestas){
-            if( arco.getDestino().equals(u))
-                vertex.add((Vertice<T>) arco.getOrigem());
-            else if( arco.getOrigem().equals(u))
+            if( arco.getOrigem().equals(u))
                 vertex.add((Vertice<T>) arco.getDestino());
-
         }
         return vertex;
     }
