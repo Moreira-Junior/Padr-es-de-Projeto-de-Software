@@ -1,4 +1,4 @@
-package observer;
+package subscriber;
 
 public class Equipamento implements Subscriber {
     private String nome;

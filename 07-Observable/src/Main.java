@@ -1,5 +1,5 @@
 import docente.Docente;
-import observer.Equipamento;
+import subscriber.Equipamento;
 import publisher.BlocoAcademico;
 
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package publisher;
 
 import docente.Docente;
-import observer.Equipamento;
-import observer.Subscriber;
+import subscriber.Equipamento;
+import subscriber.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
